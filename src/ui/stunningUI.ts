@@ -8,8 +8,10 @@ import boxen, {type Options as BoxenOptions} from "boxen";
 import * as emoji from "node-emoji";
 import {createSpinner} from "nanospinner";
 import inquirer from "inquirer";
+import {getCliVersion} from "../utils/cliVersion.js";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const cliVersion = getCliVersion();
 
 // Color schemes
 const colors = {
@@ -191,7 +193,7 @@ export const showDashboard = () => {
     {label: "Projects Created", value: "1,247", icon: "package"},
     {label: "Happy Users", value: "892", icon: "smile"},
     {label: "Templates", value: "24", icon: "clipboard"},
-    {label: "Version", value: "1.0.1", icon: "tag"},
+    {label: "Version", value: cliVersion, icon: "tag"},
   ];
 
   const statsLine = stats

@@ -2,9 +2,10 @@ import chalk from "chalk";
 import gradient from "gradient-string";
 import boxen from "boxen";
 import * as emoji from "node-emoji";
-import type { Answers } from "../prompts/questions.js";
+import type {Answers} from "../prompts/questions.js";
+import {getCliVersion} from "../utils/cliVersion.js";
 
-const version: string = "1.0.1";
+const version: string = getCliVersion();
 
 const showBanner = () => {
   const gradientText = gradient("#36D1DC", "#5B86E5", "#DA22FF");
@@ -14,10 +15,10 @@ const showBanner = () => {
   `);
 
   const boxedBanner = boxen(bannerContent, {
-    padding: { top: 1, bottom: 1, left: 2, right: 2 },
+    padding: {top: 1, bottom: 1, left: 2, right: 2},
     borderStyle: "round",
     borderColor: "#36D1DC",
-    margin: { top: 1, bottom: 0, left: 0, right: 0 },
+    margin: {top: 1, bottom: 0, left: 0, right: 0},
     float: "center",
   });
 
@@ -25,7 +26,9 @@ const showBanner = () => {
   console.log(chalk.gray.dim("  " + "─".repeat(40)));
   console.log(gradient.pastel("  ⚡ Fast Express.js project scaffolding\n"));
   console.log(
-    chalk.gray.dim(`  Version: ${chalk.white.bold(version)}  |  Created by ${chalk.cyan.bold("Chetan")}\n`)
+    chalk.gray.dim(
+      `  Version: ${chalk.white.bold(version)}  |  Created by ${chalk.cyan.bold("Chetan")}\n`,
+    ),
   );
 };
 
@@ -52,10 +55,10 @@ const showConfig = (answers: Answers) => {
       borderStyle: "round",
       borderColor: "#DA22FF",
       float: "center",
-    }
+    },
   );
 
   console.log(configBox);
 };
 
-export { showBanner, showConfig };
+export {showBanner, showConfig};
