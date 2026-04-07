@@ -1,38 +1,69 @@
 #!/usr/bin/env node
 
-import chalk from "chalk";
-import {log} from "console";
-import {createSpinner} from "nanospinner";
-import {showBanner, showConfig} from "./banners/banner.js";
+import {
+  showAnimatedHeader,
+  showWelcomeAnimation,
+  showFeatures,
+  showDashboard,
+  showProgressSequence,
+  showSuccessCelebration,
+  showError,
+  showWarning,
+  showInfo,
+  showLoadingScreen,
+  runDemo,
+} from "./ui/stunningUI.js";
 import createProject from "./create.js";
 import askQuestions from "./prompts/questions.js";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const runLoader = async () => {
-  const spinner = createSpinner(chalk.cyan("Getting things ready...")).start();
-  await sleep(2000);
-  spinner.success({text: chalk.green("All set! Let's go \n")});
-};
-
 const main = async () => {
   try {
-    showBanner();
+    // Clear console for clean slate
+    console.clear();
 
+    // Show stunning animated header
+    await showAnimatedHeader();
+    await showWelcomeAnimation();
+
+    // Display dashboard stats
+    showDashboard();
+
+    // Show features
+    showFeatures();
+
+    // Get user answers with styled prompts
     const answers = await askQuestions();
 
-    await sleep(1000);
-
-    showConfig(answers);
+    await sleep(500);
 
     if (answers.projectName) {
-      log(chalk.green("\nGreat! Setting up your project..."));
-      await runLoader();
+      // Show progress sequence
+      console.log("\n");
+      await showProgressSequence([
+        "Creating project structure",
+        "Installing dependencies",
+        "Configuring TypeScript",
+        "Setting up ESLint",
+        "Finalizing setup",
+      ]);
+
+      // Create the project
       await createProject(answers);
+
+      // Success celebration
+      await showSuccessCelebration(answers.projectName);
     }
   } catch (error) {
-    log(chalk.red("Something went wrong:"), error);
+    showError(`Something went wrong: ${error instanceof Error ? error.message : "Unknown error"}`);
     process.exit(1);
   }
 };
-main();
+
+// Run demo mode with --demo flag
+if (process.argv.includes("--demo")) {
+  runDemo();
+} else {
+  main();
+}

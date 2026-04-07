@@ -6,18 +6,25 @@ import {templatePath} from "../create.js";
 import {
   env,
   envExample,
-  gitignore,
   eslint,
+  gitignore,
 } from "../templates/dotFileTemplets.js";
 import {
-  expressTemplateCJS,
-  expressTemplateESM,
-  expressTemplateTS,
+  commanjsImport,
+  esmImport,
+  appJsTemplate,
   packageJsonTemplateCJS,
   packageJsonTemplateESM,
+  serverTsTemplate,
+} from "../templates/express/jsTemplates/jsTemplets.js";
+
+import {
+  appts as appTs,
   packageJsonTemplateTS,
+  serverJsTemplate,
   tsConfigTemplate,
-} from "../templates/express/templets.js";
+  tsImport,
+} from "../templates/express/TsTemplates/tsTemplates.js";
 
 type rootFilesType = {
   file: string;
@@ -75,9 +82,18 @@ const createRootFiles = (
       data: () =>
         language === "javascript"
           ? mjsMode === "esm"
-            ? expressTemplateESM
-            : expressTemplateCJS
-          : expressTemplateTS,
+            ? esmImport.slice(0, -1).join("\n") + serverJsTemplate
+            : commanjsImport.slice(0, -1).join("\n") + serverJsTemplate
+          : serverTsTemplate,
+    },
+    {
+      file: language === "javascript" ? "app.js" : "app.ts",
+      data: () =>
+        language === "javascript"
+          ? mjsMode === "esm"
+            ? esmImport.slice(0, -1).join("\n") + appJsTemplate
+            : commanjsImport.slice(0, -1).join("\n") + appJsTemplate
+          : ((tsImport.slice(0,-1).join("\n") + appTs) as string),
     },
 
     {
@@ -123,12 +139,13 @@ const createRootFiles = (
     {
       file: ".prettierrc",
       data: () => `
-{
- "semi": true,
- "singleQuote": true,
- "tabWidth": 2,
- "trailingComma": "es5"
-}`,
+                {
+                "semi": true,
+                "singleQuote": true,
+                "tabWidth": 2,
+                "trailingComma": "es5"
+                }
+                `,
     },
     {file: ".eslintrc.json", data: () => eslint},
     {
@@ -137,16 +154,12 @@ const createRootFiles = (
     },
   ];
 
-  rootFiles
-    .filter(({file}) => {
-      if (language === "javascript")
-        return file !== "server.ts" && file !== "tsconfig.json";
-      if (language === "typescript") return file !== "server.js";
-      return true;
-    })
-    .forEach(({file, data}) => {
-      fs.writeFileSync(`${projectName}/${file}`, data());
-    });
+  rootFiles.forEach(({file, data}) => {
+    const content = data();
+    if (content) {
+      fs.writeFileSync(`${projectName}/${file}`, content);
+    }
+  });
 };
 
 export {createFolders, createRootFiles};

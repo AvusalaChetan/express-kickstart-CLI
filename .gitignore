@@ -23,3 +23,5 @@ Thumbs.db
 npm-debug.log*
 
 my-app/
+.vscode/
+.claude/

@@ -1,7 +1,7 @@
 const env = `
 PORT=8080
 DATABASE_URL=mongodb://localhost:27017/
-JWT_SECRET=your jwt secret 
+JWT_SECRET=your_jwt_secret
 `;
 
 const envExample: string = `# .env.example
